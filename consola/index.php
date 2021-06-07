@@ -44,6 +44,10 @@ function URLChecker(){
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <!-- Edic. Global Productos -->
+  <link rel="icon" type="image/x-icon" href="./css/edicprod.css"/>
+
  
 </head>
 
@@ -416,118 +420,151 @@ function URLChecker(){
             </div>
           </div>  
 <!-- FIN Modal -->
-            <div class="table-responsive">
-                              <table class="table table-striped table-sm">
-                                <thead>
-                                  <tr>
-                                    <th><input class="" type="checkbox" value="" id="CheckBoxGlobal" onchange="CheckBoxGlobal();"title="Seleccionar Todos"></th>
-                                    <th>Codigo</th>
-                                    <th>Nombre</th>
-                                    <th>Stock</th>
-                                    <th>Categoria1</th>
-                                    <th>Categoria2</th>
-                                    <th>Categoria3</th>
-                                    <th>Costo</th>                                    
-                                    <th>Margen</th> 
-                                    <th>Oferta</th>
-                                    <th>Precio</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                  <?php
-                  //MOSTRADOR DE PRODUCTOS (LISTADO)
-
-                  //Cuando la pagina carga por primera vez setea el filtro para mostrar 19 productos(pantalla completa)
-                  if (isset($_POST['Filtro'])){$Filtro=$_POST['Filtro'];}else{$Filtro="19";};
-                  
-                  $class="FormLista";
-                  //Checkeo si hay producto con categoria que haya sido previamente eliminada
-                  $categoriaFaltante="SELECT * FROM TERRA_Productos where aux1='1' AND Eliminar!='1' LIMIT ".$Filtro." ";                  
-                  $resultado= $conn->query($categoriaFaltante);
-                  if($resultado->num_rows >0){
-                  //Si el resultado es mayor a cero muestro los productos sin categoria por eliminacion primero
-                  $sql ="SELECT * FROM TERRA_Productos WHERE Eliminar!='1' order by aux1 desc LIMIT ".$Filtro."";
-                  $result= $conn->query($sql);
-                  }else
-                  {
-                  //En caso de no haber productos con categorias eliminadas previamente ordeno por bloques de Categoria1
-                  $sql ="SELECT * FROM TERRA_Productos WHERE Eliminar!='1' order by Categoria desc LIMIT ".$Filtro."";
-                  $result= $conn->query($sql);
-                  }
-                  if ($result->num_rows > 0) {
-                  //Output data of each row
-                  while($row = $result->fetch_assoc()) {
-                    $search1=$row["Categoria"];
-                    $search2=$row["Categoria2"];
-                    $search3=$row["Categoria3"];
-                    //Obtencion de Nombre categoria by ID
-                    $sqlID = "SELECT * FROM TERRA_Categorias WHERE ID = '$search1'";
-                    $resultID= $conn->query($sqlID);
-                    $row1 = $resultID->fetch_assoc();
-                    $NombreCategoria1=$row1["Nombre"];
-
-                    $sqlID2 = "SELECT * FROM TERRA_Categorias WHERE ID = '$search2'";
-                    $resultID2= $conn->query($sqlID2);
-                    $row2 = $resultID2->fetch_assoc();
-                    $NombreCategoria2=$row2["Nombre"];
-
-                    $sqlID3 = "SELECT * FROM TERRA_Categorias WHERE ID = '$search3'";
-                    $resultID3= $conn->query($sqlID3);
-                    $row3 = $resultID3->fetch_assoc();
-                    $NombreCategoria3=$row3["Nombre"];
-                               ?>                     
-<tr>
-
-    <td>
-      <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="CheckBoxIndividual" title="Seleccionar Item">                                      
+<div class="mdl-grid" style="width:1000px;margin-top:100px;">
+  <div id="products" class="mdl-data-tabledynamic mdl-shadow--2dp">
+    <div class="mdl-data-tabledynamic__title">
+      <div class="mdl-data-tabledynamic__actions">
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect add-row">
+                                            ADD
+                                        </a>
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect remove-row">
+                                            REMOVE
+                                        </a>
       </div>
-    </td>                         
-    <form action="index.php#Productos" method="post" id="EditarProducto<?php echo $row["ID"]; ?>"> 
-                     
-        <td><?php echo $row["Codigo"]; ?></td>
-        <td><?php echo $row["Nombre"]; ?></td>                            
-        <td><?php echo $row["Stock"]; ?></td>
-        <td><?php echo $NombreCategoria1; ?></td>
-        <td><?php echo $NombreCategoria2; ?></td>
-        <td><?php echo $NombreCategoria3; ?></td>
-        <td>$<input name="CostoProducto" type="text"  onchange="document.getElementById('EditarProducto<?php echo $row['ID']; ?>').submit()" class="FormLista" value="<?php echo $row["Costo"]; ?>"></td>
-        <td>%<input name="MargenProducto" type="text"  onchange="document.getElementById('EditarProducto<?php echo $row['ID']; ?>').submit()" class="FormLista" value="<?php echo $row["Margen"]; ?>"></td>
-        <td>%<input name="OfertaProducto" type="text"  onchange="document.getElementById('EditarProducto<?php echo $row['ID']; ?>').submit()" class="FormLista" value="<?php echo $row["Oferta"]; ?>"></td>
-        <td>$<input name="PrecioProducto" type="text"  onchange="document.getElementById('EditarProducto<?php echo $row['ID']; ?>').submit()" class="FormLista" value="<?php echo $row["Precio"]; ?>"></td>
-        <td> 
-        <button disabled class="btn btn-light" title="<?php if ($row['Mostrar']!=1){echo "NO ";};?>Se Muestra"><span data-feather="eye<?php if ($row['Mostrar']!=1){echo "-off";}; ?>"></span></button>
-        </td>
-        <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
-        <input type="hidden" name="EditarProducto" value="set" />
-    </form>
-    <td> 
-    <form action="index.php#EditarProducto" class="mb-0" method="post">
-    <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
-        <button class="btn btn-light" id="MenuEditarProducto" name="MenuEditarProducto" onclick="this.form.submit()"><span data-feather="edit"></span></button>
-        
-        </form>  
-   </td> 
-    <td>                 
-        <form action="index.php#Productos" class="mb-0" method="post">
-            <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
-            <button class="btn btn-light" name="EliminarProducto" onclick="this.form.submit()"><span data-feather="trash-2"></span></button>
-        </form>                                    
-    </td> 
-</tr>
-                         <?php   } }else {  ?>
-                            <tr>
-                            NO HAY PRODUCTOS
-                            <tr>
-                      <?php     }   ?>             
-                  </tbody>
-                </table>
-              </div>
-            </div>
 
+    </div>
+
+    <div class="mdl-data-tabledynamic__content">
+      <table class="mdl-data-table mdl-data-dynamictable mdl-js-data-table mdl-shadow--2dp mdl-cell--6-col mdl-data-table__row--selectable">
+        <thead>
+
+          <tr>
+            <th>
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="checkbox-all">
+                                                        <input type="checkbox" id="checkbox-all" class="mdl-checkbox__input">
+                                                    </label>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric">Codigo</th>
+            <th class="mdl-data-table__cell--non-numeric">Nombre</th>
+            <th class="mdl-data-table__cell--non-numeric">Stock</th>
+            <th class="mdl-data-table__cell--non-numeric">Categoria 1</th>
+            <th class="mdl-data-table__cell--non-numeric">Categoria 2</th>
+            <th class="mdl-data-table__cell--non-numeric">Categoria 3</th>
+            <th>Costo</th>
+            <th>Margen</th>
+            <th>Oferta</th>
+            <th>Precio</th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          //MOSTRADOR DE PRODUCTOS (LISTADO)
+
+          //Cuando la pagina carga por primera vez setea el filtro para mostrar 19 productos(pantalla completa)
+          if (isset($_POST['Filtro'])){$Filtro=$_POST['Filtro'];}else{$Filtro="19";};
+          
+          $class="FormLista";
+          //Checkeo si hay producto con categoria que haya sido previamente eliminada
+          $categoriaFaltante="SELECT * FROM TERRA_Productos where aux1='1' AND Eliminar!='1' LIMIT ".$Filtro." ";                  
+          $resultado= $conn->query($categoriaFaltante);
+          if($resultado->num_rows >0){
+          //Si el resultado es mayor a cero muestro los productos sin categoria por eliminacion primero
+          $sql ="SELECT * FROM TERRA_Productos WHERE Eliminar!='1' order by aux1 desc LIMIT ".$Filtro."";
+          $result= $conn->query($sql);
+          }else
+          {
+          //En caso de no haber productos con categorias eliminadas previamente ordeno por bloques de Categoria1
+          $sql ="SELECT * FROM TERRA_Productos WHERE Eliminar!='1' order by Categoria desc LIMIT ".$Filtro."";
+          $result= $conn->query($sql);
+          }
+          if ($result->num_rows > 0) {
+          //Output data of each row
+          while($row = $result->fetch_assoc()) {
+            $search1=$row["Categoria"];
+            $search2=$row["Categoria2"];
+            $search3=$row["Categoria3"];
+            //Obtencion de Nombre categoria by ID
+            $sqlID = "SELECT * FROM TERRA_Categorias WHERE ID = '$search1'";
+            $resultID= $conn->query($sqlID);
+            $row1 = $resultID->fetch_assoc();
+            $NombreCategoria1=$row1["Nombre"];
+
+            $sqlID2 = "SELECT * FROM TERRA_Categorias WHERE ID = '$search2'";
+            $resultID2= $conn->query($sqlID2);
+            $row2 = $resultID2->fetch_assoc();
+            $NombreCategoria2=$row2["Nombre"];
+
+            $sqlID3 = "SELECT * FROM TERRA_Categorias WHERE ID = '$search3'";
+            $resultID3= $conn->query($sqlID3);
+            $row3 = $resultID3->fetch_assoc();
+            $NombreCategoria3=$row3["Nombre"];
+                       ?>                     
+          <tr>
+            <td>
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="checkbox-1">
+
+                                                        <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input">
+                                                    </label>
+            </td>
+            <form action="index.php#Productos" method="post" id="EditarProducto<?php echo $row["ID"]; ?>"> 
+                     
+              <td> <span class="mdl-data-table__label add-table-content" title="product name"> <?php echo $row["Codigo"]; ?> </span></td>
+              <td><?php echo $row["Nombre"]; ?></td>                            
+              <td><?php echo $row["Stock"]; ?></td>
+              <td><?php echo $NombreCategoria1; ?></td>
+              <td><?php echo $NombreCategoria2; ?></td>
+              <td><?php echo $NombreCategoria3; ?></td>
+              <td>$<input name="CostoProducto" type="text"  onchange="document.getElementById('EditarProducto<?php echo $row['ID']; ?>').submit()" class="FormLista" value="<?php echo $row["Costo"]; ?>"></td>
+              <td>%<input name="MargenProducto" type="text"  onchange="document.getElementById('EditarProducto<?php echo $row['ID']; ?>').submit()" class="FormLista" value="<?php echo $row["Margen"]; ?>"></td>
+              <td>%<input name="OfertaProducto" type="text"  onchange="document.getElementById('EditarProducto<?php echo $row['ID']; ?>').submit()" class="FormLista" value="<?php echo $row["Oferta"]; ?>"></td>
+              <td>$<input name="PrecioProducto" type="text"  onchange="document.getElementById('EditarProducto<?php echo $row['ID']; ?>').submit()" class="FormLista" value="<?php echo $row["Precio"]; ?>"></td>
+              <td> 
+              <button disabled class="btn btn-light" title="<?php if ($row['Mostrar']!=1){echo "NO ";};?>Se Muestra"><span data-feather="eye<?php if ($row['Mostrar']!=1){echo "-off";}; ?>"></span></button>
+              </td>
+              <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
+              <input type="hidden" name="EditarProducto" value="set" />
+          </form>
+          <td> 
+          <form action="index.php#EditarProducto" class="mb-0" method="post">
+          <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
+              <button class="btn btn-light" id="MenuEditarProducto" name="MenuEditarProducto" onclick="this.form.submit()"><span data-feather="edit"></span></button>
+              
+              </form>  
+         </td> 
+          <td>                 
+              <form action="index.php#Productos" class="mb-0" method="post">
+                  <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
+                  <button class="btn btn-light" name="EliminarProducto" onclick="this.form.submit()"><span data-feather="trash-2"></span></button>
+              </form>                                 
+
+          </tr>
+          <?php   } }else {  ?>
+            <tr>
+            NO HAY PRODUCTOS
+            <tr>
+      <?php     }   ?>      
+        </tbody>
+      </table>
+    </div>
+
+
+  </div>
+</div>
+<dialog class="mdl-dialog">
+  <h4 class="mdl-dialog__title">Remove Products</h4>
+  <div class="mdl-dialog__content">
+    <p>
+      Selected products will be removed. Are you sure?
+    </p>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button type="button" class="mdl-button remove">Yes</button>
+    <button type="button" class="mdl-button close">Cancel</button>
+  </div>
+</dialog>
 
 <!-- FORMULARIO DE CARGA DE PRODUCTOS-->
 <div class="Ocultar" id="AgregarProducto">
@@ -1143,6 +1180,30 @@ if (isset($_POST['MenuEditarProducto'])) {
     <script>
       feather.replace()
     </script>
+
+    <!-- Edic. Global Prod. -->
+    <script type="text/template" id="addContentDialogTemplate">
+  <div class="mdl-dialog__addContent mdl-shadow--2dp">
+    <h3 class="mdl-dialog__title">Add {{title}}</h3>
+    <div class="mdl-dialog__content">
+      <div class="mdl-textfield mdl-js-textfield">
+        <input class="mdl-textfield__input" type="text" id="content" {{pattern}}>
+        <label class="mdl-textfield__label" for="content"></label>
+        <span class="mdl-textfield__error">{{error}} </span>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="save mdl-button mdl-button--colored mdl-color-text--red-500">Save</button>
+      <button type="button" class="close mdl-button mdl-button--colored mdl-color-text--red-500">Cancel</button>
+    </div>
+  </div>
+</script>
+
+
+<!-- partial -->
+  <script src='https://code.jquery.com/jquery-1.12.0.min.js'></script>
+<script src='https://code.getmdl.io/1.1.3/material.min.js'></script><script  src="./js/edicprod.js"></script>
+
 
   </body>
 
