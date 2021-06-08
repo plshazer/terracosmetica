@@ -47,6 +47,7 @@ function URLChecker(){
 
   <!-- Edic. Global Productos -->
   <link rel="icon" type="image/x-icon" href="./css/edicprod.css"/>
+  <link rel='stylesheet' href='https://code.getmdl.io/1.1.3/material.cyan-light_blue.min.css'>
 
  
 </head>
@@ -509,7 +510,6 @@ function URLChecker(){
                                                         <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input">
                                                     </label>
             </td>
-            <form action="index.php#Productos" method="post" id="EditarProducto<?php echo $row["ID"]; ?>"> 
                      
               <td> <span class="mdl-data-table__label add-table-content" title="product name"> <?php echo $row["Codigo"]; ?> </span></td>
               <td><?php echo $row["Nombre"]; ?></td>                            
@@ -524,22 +524,6 @@ function URLChecker(){
               <td> 
               <button disabled class="btn btn-light" title="<?php if ($row['Mostrar']!=1){echo "NO ";};?>Se Muestra"><span data-feather="eye<?php if ($row['Mostrar']!=1){echo "-off";}; ?>"></span></button>
               </td>
-              <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
-              <input type="hidden" name="EditarProducto" value="set" />
-          </form>
-          <td> 
-          <form action="index.php#EditarProducto" class="mb-0" method="post">
-          <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
-              <button class="btn btn-light" id="MenuEditarProducto" name="MenuEditarProducto" onclick="this.form.submit()"><span data-feather="edit"></span></button>
-              
-              </form>  
-         </td> 
-          <td>                 
-              <form action="index.php#Productos" class="mb-0" method="post">
-                  <input type="hidden" name="IDProducto" value="<?php echo $row["ID"]; ?>" />
-                  <button class="btn btn-light" name="EliminarProducto" onclick="this.form.submit()"><span data-feather="trash-2"></span></button>
-              </form>                                 
-
           </tr>
           <?php   } }else {  ?>
             <tr>
